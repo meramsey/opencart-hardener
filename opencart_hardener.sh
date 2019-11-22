@@ -89,13 +89,13 @@ EOL
 #wget -O $DOCROOT/catalog/.htaccess https://gitlab.com/mikeramsey/opencart-hardener/raw/master/catalog_htaccess
 
 #System
-cat >> "$DOCROOT"/system/.htaccess  <<EOL
-<Files *.*>
-Order Deny,Allow
-Deny from all
+#cat >> "$DOCROOT"/system/.htaccess  <<EOL
+#<Files *.*>
+#Order Deny,Allow
+#Deny from all
 #Allow from "your ip address"
-</Files>
-EOL
+#</Files>
+#EOL
 
 #Wget option
 #wget -O $DOCROOT/system/.htaccess https://gitlab.com/mikeramsey/opencart-hardener/raw/master/system_htaccess
