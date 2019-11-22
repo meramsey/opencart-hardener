@@ -1,0 +1,7 @@
+#Honeypot Original OCAdmin
+# ~Username/public_html/admin/.htaccess
+Order Deny,Allow
+Deny from all
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
