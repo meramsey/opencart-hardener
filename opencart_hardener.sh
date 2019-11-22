@@ -34,7 +34,7 @@ echo '2. Enable HTTPS'
 
 echo "Enabling HTPPS in $DOCROOT/.htaccess"
 
-#Create SSL rewrite rules file /tmp/opencartsslrewrite
+echo 'Create SSL rewrite rules tmp file /tmp/opencartsslrewrite'
 cat >> /tmp/opencartsslrewrite <<EOL
 # Force https everywhere
 RewriteCond %{HTTPS} off
@@ -46,22 +46,21 @@ Header always set Content-Security-Policy "upgrade-insecure-requests;"
 </IfModule>
 EOL
 
-#Append current htaccess rules to redirect to SSL
+echo 'Append current htaccess rules to redirect to SSL'
 cat "$DOCROOT"/.htaccess >> /tmp/opencartsslrewrite
 
-#backup current .htaccess
+echo "backup current .htaccess to $DOCROOT/.htaccess-bak_$(date '+%Y-%m-%d_%H:%M:%S')"
 mv "$DOCROOT"/.htaccess "$DOCROOT"/.htaccess-bak_"$(date '+%Y-%m-%d_%H:%M:%S')"
 
-#place new current htacces 
+echo 'Place new current htaccess with SSL rewrite rules at top' 
 cp /tmp/opencartsslrewrite "$DOCROOT"/.htaccess
 
 echo "Enforce HTTPS: $DOCROOT/{config.php,admin/config.php}"
-
 sed -i 's|http:|https:|g' "$DOCROOT"/{config.php,admin/config.php}
 
 # -admin/config.php
 
-#3. Change admin to custom folder
+echo "3. Change admin to custom folder $DOCROOT/${CUSTOMADMIN} in admin/config.php"
 # -admin/config.php
 # define('HTTP_SERVER', 'http://domain.com/ogadmin69/');
 # define('HTTPS_SERVER', 'https://domain.com/ogadmin69/');
@@ -69,13 +68,13 @@ sed -i 's|http:|https:|g' "$DOCROOT"/{config.php,admin/config.php}
 grep -rl '/admin/' "$DOCROOT"/admin/config.php | xargs sed -i "s|/admin/|/$CUSTOMADMIN/|g"
 
 
-#4. Move files from $DOCROOT/admin to $DOCROOT/ogadmin69
+echo "4. Move files from $DOCROOT/admin to $DOCROOT/${CUSTOMADMIN}"
 rsync -azh --remove-source-files --info=progress2 "$DOCROOT"/admin/ "$DOCROOT"/"${CUSTOMADMIN}"/
 
-#5. Remove empty admin source folders after Rsync
+echo '5. Remove empty admin source folders after admin folder moved'
 find "$DOCROOT"/admin -mindepth 1 -type d -empty -delete
 
-#6. Setup deny alls
+echo '6. Setup deny alls for Catalog,System,default admin folder'
 
 #Catalog
 cat >> "$DOCROOT"/catalog/.htaccess <<EOL
@@ -193,3 +192,33 @@ echo '7. Harden permissions'
 chmod 444 "$DOCROOT"/{config.php,index.php,system/startup.php,"${CUSTOMADMIN}"/{config.php,index.php}}
 #chmod 444 $DOCROOT/${CUSTOMADMIN}/{config.php,index.php}
 
+echo 'OpenCart Hardening completed!'
+echo "New OpenCart Admin login page: $OCBASEURL/${CUSTOMADMIN}"
+echo "New OpenCart Admin path: $DOCROOT/${CUSTOMADMIN}"
+
+OCBASEDOMAIN=$(echo "$OCBASEURL" | awk -F/ '{print $3}')
+
+cat >> "$HOME"/opencart_hardener_updater_"$OCBASEDOMAIN".sh  <<EOL
+#!/bin/bash
+## Author: Michael Ramsey
+## Objective: Opencart Hardener Updater: After installing new plugins or themes which installed to default admin area this should be run to move the files to the custom admin area.
+## https://gitlab.com/mikeramsey/
+## 
+## How to use. start script to migrate stuff from default Opencart admin folder to the customadmin folder
+# ./opencart_hardener_updater.sh 
+# sh opencart_hardener_updater.sh
+#Custom upgrade script for $OCBASEURL
+
+echo "Move files from $DOCROOT/admin to $DOCROOT/${CUSTOMADMIN}"
+rsync -azh --remove-source-files --exclude '.htaccess' --info=progress2 "$DOCROOT"/admin/ "$DOCROOT"/"${CUSTOMADMIN}"/
+
+echo 'Remove empty admin source folders after files from default admin folder moved custom admin folder'
+find "$DOCROOT"/admin -mindepth 1 -type d -empty -delete
+
+EOL
+
+
+echo "After upgrading or installing plugins themes run the custom upgrade bash script: $HOME/opencart_hardener_updater_$OCBASEDOMAIN.sh"
+echo "Or run the below commands manually to move files from default admin to custom admin folder"
+echo "rsync -azh --remove-source-files --info=progress2 $DOCROOT/admin/ $DOCROOT/${CUSTOMADMIN}/"
+echo "find $DOCROOT/admin -mindepth 1 -type d -empty -delete"
