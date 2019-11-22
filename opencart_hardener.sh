@@ -20,19 +20,25 @@ DOCROOT="${2:-$DEFAULTDOCROOT}"
 DOCROOT=$(echo "$DOCROOT"| sed 's:/*$::')
 
 echo user name: "$USER", user home: "$HOME"
+echo ""
 
 echo "Opencart Document Root: $DOCROOT"
+echo ""
 
 echo '1. Finding current Opencart Base URL from config.php'
 #define('HTTP_SERVER', 'https://domain.com/');
 # https://domain.com/
 OCBASEURL=$(grep HTTP_SERVER "$DOCROOT"/config.php | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*")
+echo ""
 
 echo "Found: $OCBASEURL"
+echo ""
 
 echo '2. Enable HTTPS'
+echo ""
 
 echo "Enabling HTPPS in $DOCROOT/.htaccess"
+echo ""
 
 echo 'Create SSL rewrite rules tmp file /tmp/opencartsslrewrite'
 cat >> /tmp/opencartsslrewrite <<EOL
@@ -45,19 +51,23 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 Header always set Content-Security-Policy "upgrade-insecure-requests;"
 </IfModule>
 EOL
+echo ""
 
 echo 'Append current htaccess rules to redirect to SSL'
 cat "$DOCROOT"/.htaccess >> /tmp/opencartsslrewrite
+echo ""
 
 echo "backup current .htaccess to $DOCROOT/.htaccess-bak_$(date '+%Y-%m-%d_%H:%M:%S')"
 mv "$DOCROOT"/.htaccess "$DOCROOT"/.htaccess-bak_"$(date '+%Y-%m-%d_%H:%M:%S')"
+echo ""
 
 echo 'Place new current htaccess with SSL rewrite rules at top' 
 cp /tmp/opencartsslrewrite "$DOCROOT"/.htaccess
+echo ""
 
 echo "Enforce HTTPS: $DOCROOT/{config.php,admin/config.php}"
 sed -i 's|http:|https:|g' "$DOCROOT"/{config.php,admin/config.php}
-
+echo ""
 # -admin/config.php
 
 echo "3. Change admin to custom folder $DOCROOT/${CUSTOMADMIN} in admin/config.php"
@@ -66,16 +76,18 @@ echo "3. Change admin to custom folder $DOCROOT/${CUSTOMADMIN} in admin/config.p
 # define('HTTPS_SERVER', 'https://domain.com/ogadmin69/');
 # define('DIR_APPLICATION', '/home/username/public_html/ogadmin69/');
 grep -rl '/admin/' "$DOCROOT"/admin/config.php | xargs sed -i "s|/admin/|/$CUSTOMADMIN/|g"
-
+echo ""
 
 echo "4. Move files from $DOCROOT/admin to $DOCROOT/${CUSTOMADMIN}"
 rsync -azh --remove-source-files --info=progress2 "$DOCROOT"/admin/ "$DOCROOT"/"${CUSTOMADMIN}"/
+echo ""
 
 echo '5. Remove empty admin source folders after admin folder moved'
 find "$DOCROOT"/admin -mindepth 1 -type d -empty -delete
+echo ""
 
 echo '6. Setup deny alls for Catalog,System,default admin folder'
-
+echo ""
 #Catalog
 cat >> "$DOCROOT"/catalog/.htaccess <<EOL
 <FilesMatch "\.(php|twig|txt)$">
@@ -182,7 +194,7 @@ EOL
 
 
 echo '7. Harden permissions'
-
+echo ""
 #chmod 444 $DOCROOT/config.php
 #chmod 444 $DOCROOT/index.php
 #chmod 444 $DOCROOT/${CUSTOMADMIN}/config.php
@@ -192,10 +204,14 @@ echo '7. Harden permissions'
 chmod 444 "$DOCROOT"/{config.php,index.php,system/startup.php,"${CUSTOMADMIN}"/{config.php,index.php}}
 #chmod 444 $DOCROOT/${CUSTOMADMIN}/{config.php,index.php}
 
+#Strip trailing slash "/" from OCBASEURL 
+OCBASEURL=$(echo "$OCBASEURL"| sed 's:/*$::')
+
 echo 'OpenCart Hardening completed!'
+echo ""
 echo "New OpenCart Admin login page: $OCBASEURL/${CUSTOMADMIN}"
 echo "New OpenCart Admin path: $DOCROOT/${CUSTOMADMIN}"
-
+echo ""
 OCBASEDOMAIN=$(echo "$OCBASEURL" | awk -F/ '{print $3}')
 
 cat >> "$HOME"/opencart_hardener_updater_"$OCBASEDOMAIN".sh  <<EOL
@@ -217,7 +233,7 @@ find "$DOCROOT"/admin -mindepth 1 -type d -empty -delete
 
 EOL
 
-
+echo ""
 echo "After upgrading or installing plugins themes run the custom upgrade bash script: $HOME/opencart_hardener_updater_$OCBASEDOMAIN.sh"
 echo "Or run the below commands manually to move files from default admin to custom admin folder"
 echo "rsync -azh --remove-source-files --info=progress2 $DOCROOT/admin/ $DOCROOT/${CUSTOMADMIN}/"
