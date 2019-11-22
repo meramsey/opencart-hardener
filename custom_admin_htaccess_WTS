@@ -1,0 +1,62 @@
+#Custom Admin
+# ~Username/public_html/ogadmin69/.htaccess
+Order Deny,Allow
+Deny from all
+# whitelist home IP address
+#allow from 1.2.3.4
+ 
+#whitelist office IP Address
+#allow from 1.2.3.5
+
+#whitelist vpn IP Address
+#allow from 1.2.3.6
+
+
+# softy1 NL Amsterdam
+Allow from 93.158.203.109
+
+#softy2 NL Amsterdam
+Allow from 93.158.203.91
+
+#softy3 US Miami
+Allow from 144.202.38.159
+
+#softy4 US Chicago
+Allow from 8.12.16.99
+
+#softy5 US New Jersey
+Allow from 45.32.6.181
+
+#softy6 US Seattle
+Allow from 144.202.93.38
+
+#softy7 US Los Angeles
+Allow from 45.76.174.145
+
+#softy8 AU Sydney
+Allow from 149.28.162.174
+
+#softy9 JP Tokyo
+Allow from 202.182.105.46
+
+#softy10 HK Singapore
+Allow from 149.28.151.117
+
+#softy11 FR Paris
+Allow from 140.82.54.59
+
+#softy12 DE Frankfurt
+Allow from 104.238.167.21
+
+#softy13 UK London
+Allow from 45.63.101.64
+
+#Softy14 NL Amsterdam
+Allow from 93.158.203.100
+
+#softy15 NL Amsterdam
+Allow from 93.158.203.112
+
+#softy16 CA Toronto
+Allow from 155.138.147.206
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
