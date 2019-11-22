@@ -11,22 +11,22 @@
 CUSTOMADMIN="${1:-ogadmin69}"
 
 #Default Document root
-DEFAULTDOCROOT=$($HOME/public_html); #echo $DEFAULTDOCROOT
+DEFAULTDOCROOT=$("$HOME"/public_html); #echo $DEFAULTDOCROOT
 
 #If no Document root specified fallback to default document root
 DOCROOT="${2:-$DEFAULTDOCROOT}"
 
 #Strip trailing slash "/" from path
-DOCROOT=$(echo $DOCROOT| sed 's:/*$::')
+DOCROOT=$(echo "$DOCROOT"| sed 's:/*$::')
 
-echo user name: $USER, user home: $HOME
+echo user name: "$USER", user home: "$HOME"
 
 echo "Opencart Document Root: $DOCROOT"
 
 echo '1. Finding current Opencart Base URL from config.php'
 #define('HTTP_SERVER', 'https://domain.com/');
 # https://domain.com/
-OCBASEURL=$(grep HTTP_SERVER $DOCROOT/config.php | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*")
+OCBASEURL=$(grep HTTP_SERVER "$DOCROOT"/config.php | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*")
 
 echo "Found: $OCBASEURL"
 
@@ -47,17 +47,17 @@ Header always set Content-Security-Policy "upgrade-insecure-requests;"
 EOL
 
 #Append current htaccess rules to redirect to SSL
-cat $DOCROOT/.htaccess >> /tmp/opencartsslrewrite
+cat "$DOCROOT"/.htaccess >> /tmp/opencartsslrewrite
 
 #backup current .htaccess
-mv $DOCROOT/.htaccess $DOCROOT/.htaccess-bak_$(date '+%Y-%m-%d_%H:%M:%S')
+mv "$DOCROOT"/.htaccess "$DOCROOT"/.htaccess-bak_"$(date '+%Y-%m-%d_%H:%M:%S')"
 
 #place new current htacces 
-cp /tmp/opencartsslrewrite $DOCROOT/.htaccess
+cp /tmp/opencartsslrewrite "$DOCROOT"/.htaccess
 
 echo "Enforce HTTPS: $DOCROOT/{config.php,admin/config.php}"
 
-sed -i 's|http:|https:|g' $DOCROOT/{config.php,admin/config.php}
+sed -i 's|http:|https:|g' "$DOCROOT"/{config.php,admin/config.php}
 
 # -admin/config.php
 
@@ -66,19 +66,19 @@ sed -i 's|http:|https:|g' $DOCROOT/{config.php,admin/config.php}
 # define('HTTP_SERVER', 'http://domain.com/ogadmin69/');
 # define('HTTPS_SERVER', 'https://domain.com/ogadmin69/');
 # define('DIR_APPLICATION', '/home/username/public_html/ogadmin69/');
-grep -rl '/admin/' $DOCROOT/admin/config.php | xargs sed -i "s|/admin/|/$CUSTOMADMIN/|g"
+grep -rl '/admin/' "$DOCROOT"/admin/config.php | xargs sed -i "s|/admin/|/$CUSTOMADMIN/|g"
 
 
 #4. Move files from $DOCROOT/admin to $DOCROOT/ogadmin69
-rsync -azh --remove-source-files --info=progress2 $DOCROOT/admin/ $DOCROOT/${CUSTOMADMIN}/
+rsync -azh --remove-source-files --info=progress2 "$DOCROOT"/admin/ "$DOCROOT"/"${CUSTOMADMIN}"/
 
 #5. Remove empty admin source folders after Rsync
-find $DOCROOT/admin -mindepth 1 -type d -empty -delete
+find "$DOCROOT"/admin -mindepth 1 -type d -empty -delete
 
 #6. Setup deny alls
 
 #Catalog
-cat >> $DOCROOT/catalog/.htaccess <<EOL
+cat >> "$DOCROOT"/catalog/.htaccess <<EOL
 <FilesMatch "\.(php|twig|txt)$">
 Order Deny,Allow
 Deny from all
@@ -90,7 +90,7 @@ EOL
 #wget -O $DOCROOT/catalog/.htaccess https://gitlab.com/mikeramsey/opencart-hardener/raw/master/catalog_htaccess
 
 #System
-cat >> $DOCROOT/system/.htaccess  <<EOL
+cat >> "$DOCROOT"/system/.htaccess  <<EOL
 <Files *.*>
 Order Deny,Allow
 Deny from all
@@ -102,7 +102,7 @@ EOL
 #wget -O $DOCROOT/system/.htaccess https://gitlab.com/mikeramsey/opencart-hardener/raw/master/system_htaccess
 
 #Honeypot Original OCAdmin
-cat >> $DOCROOT/admin/.htaccess  <<EOL
+cat >> "$DOCROOT"/admin/.htaccess  <<EOL
 Order Deny,Allow
 Deny from all
 
@@ -115,7 +115,7 @@ EOL
 
 
 #Custom Admin
-cat >> $DOCROOT/${CUSTOMADMIN}/.htaccess  <<EOL
+cat >> "$DOCROOT"/"${CUSTOMADMIN}"/.htaccess  <<EOL
 Order Deny,Allow
 Deny from all
 # whitelist home IP address
@@ -190,6 +190,6 @@ echo '7. Harden permissions'
 #chmod 444 $DOCROOT/${CUSTOMADMIN}/index.php
 #chmod 444 $DOCROOT/system/startup.php
 
-chmod 444 $DOCROOT/{config.php,index.php,system/startup.php,${CUSTOMADMIN}/{config.php,index.php}}
+chmod 444 "$DOCROOT"/{config.php,index.php,system/startup.php,"${CUSTOMADMIN}"/{config.php,index.php}}
 #chmod 444 $DOCROOT/${CUSTOMADMIN}/{config.php,index.php}
 
