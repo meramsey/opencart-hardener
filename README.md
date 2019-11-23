@@ -4,7 +4,7 @@ Reference:
 [http://docs.opencart.com/en-gb/administration/security/](http://docs.opencart.com/en-gb/administration/security/)
 
 Features:
-*  Custom Admin folder support (**Including vQmod Support if detected**)
+*  Custom Admin folder support (**Including [vQmod](http://docs.opencart.com/en-gb/administration/vqmod/) Support if detected**)
 *  Honeypot default admin path and rickroll hackers
 *  Setup SSL/HTTPS for all URLS
 *  Setup deny all for System, Catalog, and sensitive files
@@ -15,12 +15,15 @@ Features:
 
 How to use:
 1. Download file from Gitlab:
+
 `wget https://gitlab.com/mikeramsey/opencart-hardener/raw/master/opencart_hardener.sh`
 
 2. Run the script with desired admin folder name and path to the opencart document root. Please Note: If no admin folder name is provided it defaults to using "cooladmin99". If no document root is provided it defaults to the current user's $HOME/public_html which is the default for primary domain on cPanel/Cyberpanel.
+
 `sh opencart_hardener.sh customadminfoldername /full/path/to/opencart/install`
 
 Example: if we wanted admin area to be "secretadmin123" and our installation folder for Opencart was "/home/cooluserjoe/public_html/ocart2/"
+
 `sh opencart_hardener.sh secretadmin123 /home/cooluserjoe/public_html/ocart2/` 
 
 After it completes it outputs how to reapply this after theme/mods/updates to Opencart which go into the default admin path via two commands. This script also outputs the path to the custom upgrade maintenance script. Make sure to note this down. That script is generated in the "$HOME/opencart_hardener_updater_$OCBASEDOMAIN.sh" to ensure its not publicly visible and in the public path where it can be scraped and your custom admin path is leaked.
