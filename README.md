@@ -33,7 +33,7 @@ These instructions will get you a copy of the project up and running on your loc
 * Apache(for the default .htaccess rules)
 
 Please note: [Openlitespeed](https://openlitespeed.org/) is supported but requires custom .htaccess rules. See example:
-[OpenLitespeed Rules to hide Admin Area](https://gitlab.com/mikeramsey/opencart-hardener/blob/master/openlitespeed_htaccess_hide_default_admin.txt)
+[OpenLitespeed Rules to hide Admin Area](openlitespeed_htaccess_hide_default_admin_example)
 
 
 ### Installing
