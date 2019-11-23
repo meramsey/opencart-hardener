@@ -129,11 +129,24 @@ EOL
 
 #Honeypot Original OCAdmin
 cat >> "$DOCROOT"/admin/.htaccess  <<EOL
+#Honeypot Default Admin
+# ~Username/public_html/admin/.htaccess
+# Apache 2.2
+<IfVersion < 2.4>
 Order Deny,Allow
 Deny from all
 
 #rickroll hackers
 ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
+
+# Apache 2.4
+<IfVersion >= 2.4>
+Require all denied
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
 EOL
 
 #Wget option
@@ -142,18 +155,13 @@ EOL
 
 #Custom Admin
 cat >> "$DOCROOT"/"${CUSTOMADMIN}"/.htaccess  <<EOL
+#Custom Admin
+# ~Username/public_html/cooladmin99/.htaccess
+<IfVersion < 2.4>
 Order Deny,Allow
 Deny from all
-# whitelist home IP address
-#allow from 1.2.3.4
- 
-#whitelist office IP Address
-#allow from 1.2.3.5
 
-#whitelist vpn IP Address
-#allow from 1.2.3.6
-
-
+#Whitelist WTS VPN IPS
 # softy1 NL Amsterdam
 Allow from 93.158.203.109
 
@@ -201,7 +209,61 @@ Allow from 93.158.203.112
 
 #softy16 CA Toronto
 Allow from 155.138.147.206
+
+#rickroll hackers
 ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
+<IfVersion >= 2.4>
+Require all denied
+#Whitelist WTS VPN IPS
+# softy1 NL Amsterdam
+Require ip 93.158.203.109
+
+#softy2 NL Amsterdam
+Require ip 93.158.203.91
+
+#softy3 US Miami
+Require ip 144.202.38.159
+
+#softy4 US Chicago
+Require ip 8.12.16.99
+
+#softy5 US New Jersey
+Require ip 45.32.6.181
+
+#softy6 US Seattle
+Require ip 144.202.93.38
+
+#softy7 US Los Angeles
+Require ip 45.76.174.145
+
+#softy8 AU Sydney
+Require ip 149.28.162.174
+
+#softy9 JP Tokyo
+Require ip 202.182.105.46
+
+#softy10 HK Singapore
+Require ip 149.28.151.117
+
+#softy11 FR Paris
+Require ip 140.82.54.59
+
+#softy12 DE Frankfurt
+Require ip 104.238.167.21
+
+#softy13 UK London
+Require ip 45.63.101.64
+
+#Softy14 NL Amsterdam
+Require ip 93.158.203.100
+
+#softy15 NL Amsterdam
+Require ip 93.158.203.112
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
 EOL
 
 #Wget option
