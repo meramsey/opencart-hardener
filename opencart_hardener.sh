@@ -78,6 +78,21 @@ echo "3. Change admin to custom folder $DOCROOT/${CUSTOMADMIN} in admin/config.p
 grep -rl '/admin/' "$DOCROOT"/admin/config.php | xargs sed -i "s|/admin/|/$CUSTOMADMIN/|g"
 echo ""
 
+#VQMOD Detection and modification
+VQMODSTARTBLOCK="START REPLACES"
+VQMODPART1='$replaces[] = array'
+VQMODPART2="('~^admin\b~', '${CUSTOMADMIN}');"
+VQMODCUSTOMADMIN="$VQMODPART1${VQMODPART2}"
+
+FILE="$DOCROOT/vqmod/pathReplaces.php"
+if [ -f $FILE ]; then
+   echo "vQmod file $FILE exists. Configuring with custom admin path"
+   sed -i "/$VQMODSTARTBLOCK/ a\ $VQMODCUSTOMADMIN" "$FILE"
+else
+   echo "No vQmod install detected: '$FILE' not found. Proceeding"
+fi
+echo ""
+
 echo "4. Move files from $DOCROOT/admin to $DOCROOT/${CUSTOMADMIN}"
 rsync -azh --remove-source-files --info=progress2 "$DOCROOT"/admin/ "$DOCROOT"/"${CUSTOMADMIN}"/
 echo ""
@@ -235,6 +250,8 @@ EOL
 
 echo ""
 echo "After upgrading or installing plugins themes run the custom upgrade bash script: $HOME/opencart_hardener_updater_$OCBASEDOMAIN.sh"
+echo ""
 echo "Or run the below commands manually to move files from default admin to custom admin folder"
+echo ""
 echo "rsync -azh --remove-source-files --info=progress2 $DOCROOT/admin/ $DOCROOT/${CUSTOMADMIN}/"
 echo "find $DOCROOT/admin -mindepth 1 -type d -empty -delete"
