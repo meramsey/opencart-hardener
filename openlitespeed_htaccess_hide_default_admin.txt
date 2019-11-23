@@ -1,4 +1,4 @@
-#Openlitespeed rules for hiding setting up default "/admin/" folder as a honeypot to rickroll hackers and only allow whitelisted IPs to access the real customadmin folder "/cooladmin99/"
+#Openlitespeed rules for setting up default "/admin/" folder as a honeypot to rickroll hackers and only allow whitelisted IPs to access the real customadmin folder "/cooladmin99/"
 
 #How to use:
 # This file should be in the document root for the site. Meaning in the directory where these subfolders exists and not inside the subfolders.
