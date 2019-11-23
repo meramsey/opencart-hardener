@@ -102,6 +102,77 @@ rsync -azh --remove-source-files --info=progress2 /home/cooluserjoe/public_html/
 find /home/cooluserjoe/public_html/ocart2/admin -mindepth 1 -type d -empty -delete
 ```
 
+## Troubleshooting
+
+If you notice you are unable to login at the new admin path and are being redirected to Youtube video this means your IP is not whitelisted in the $DOCROOT/${CUSTOMADMIN}/.htaccess or your VPN is not engaged. 
+
+To fix
+
+Navigate to the the customadmin path and add your Static IP's to the list of allowed IP's in both spots if not sure of the Apache version or in the applicable Apache code section.
+```
+#Custom Admin
+# ~Username/public_html/cooladmin99/.htaccess
+<IfVersion < 2.4>
+Order Deny,Allow
+Deny from all
+
+#Whitelist Office IP
+Allow from <your_IP_here>
+
+redacted stuff
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
+<IfVersion >= 2.4>
+Require all denied
+#Whitelist Office IP
+Require ip <your_IP_here>
+
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
+```
+
+
+
+Alternatively to disable the Whitelist IP only mode: Remove/comment out the deny all lines. See below excerpt for reference. This will allow you access. This will allow keep your customadmin link hidden but will not require you to have whitelisted IP's to access.
+```
+#Custom Admin
+# ~Username/public_html/cooladmin99/.htaccess
+<IfVersion < 2.4>
+Order Deny,Allow
+Deny from all
+
+#Whitelist WTS VPN IPS
+# softy1 NL Amsterdam
+Allow from 93.158.203.109
+
+#softy2 NL Amsterdam
+Allow from 93.158.203.91
+
+redacted stuff
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
+<IfVersion >= 2.4>
+Require all denied
+#Whitelist WTS VPN IPS
+# softy1 NL Amsterdam
+Require ip 93.158.203.109
+
+#softy2 NL Amsterdam
+Require ip 93.158.203.91
+redacted stuff
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
+```
+
+
+
 
 ## Built With
 
