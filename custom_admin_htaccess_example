@@ -1,0 +1,40 @@
+#Custom Admin htaccess example for specifying your own Static/VPN IP's
+# ~Username/public_html/cooladmin99/.htaccess
+<IfVersion < 2.4>
+Order Deny,Allow
+Deny from all
+
+# whitelist home IP address
+allow from 1.2.3.4
+ 
+#whitelist office IP Address
+allow from 1.2.3.5
+
+#whitelist vpn IP Address
+allow from 1.2.3.6
+
+#commented out rule
+#allow from 1.2.3.7
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
+<IfVersion >= 2.4>
+Require all denied
+
+# whitelist home IP address
+Require ip 1.2.3.4
+ 
+#whitelist office IP Address
+Require ip 1.2.3.5
+
+#whitelist vpn IP Address
+Require ip 1.2.3.6
+
+#commented out rule
+#Require ip 1.2.3.7
+
+
+#rickroll hackers
+ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</IfVersion>
