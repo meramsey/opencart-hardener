@@ -1,14 +1,14 @@
 #!/bin/bash
 ## Author: Michael Ramsey
 ## Objective: Opencart Hardener: change default admin path, Enable HTTPS, and secure permissions.
-## https://gitlab.com/mikeramsey/
+## https://gitlab.com/mikeramsey/opencart-hardener
 ## 
 ## How to use. start script and optionally specify custom admin folder name and OpenCart document root
 # ./opencart_hardener.sh customadmin /full/path/to/opencart/docroot/
 # sh opencart_hardener.sh customadmin /home/username/public_html/
 
 
-CUSTOMADMIN="${1:-ogadmin69}"
+CUSTOMADMIN="${1:-cooladmin99}"
 
 #Default Document root
 DEFAULTDOCROOT=$("$HOME"/public_html); #echo $DEFAULTDOCROOT
