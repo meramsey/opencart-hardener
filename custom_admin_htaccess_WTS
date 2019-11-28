@@ -104,6 +104,9 @@ Require ip 93.158.203.100
 #softy15 NL Amsterdam
 Require ip 93.158.203.112
 
+#softy16 CA Toronto
+Require ip 155.138.147.206
+
 #rickroll hackers
 ErrorDocument 403 https://www.youtube.com/watch?v=dQw4w9WgXcQ
 </IfVersion>
